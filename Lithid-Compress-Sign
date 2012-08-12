@@ -1,0 +1,28 @@
+#!/bin/bash
+# Compress then sign apks/zips
+
+function_get_nautilus_version() {
+VER="0"
+CHK=$(nautilus --version |awk '{print $3}')
+VER=$(echo $CHK |cut -d"." -f1)
+}
+
+function_get_nautilus_version
+if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
+	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts"
+else
+	SCRIPT_DIR="$HOME/Nautilus/scripts"
+fi
+
+DIR="${SCRIPT_DIR}/"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+zip -r Lithid-Compressed-Sign.zip *
+java -classpath ${DIR}/sign.jar testsign Lithid-Compressed-Sign.zip Lithid-Compressed-Sign.zip-signed-${DATE}
+rm Lithid-Compressed-Sign.zip
+if [ ! -f "Lithid-Compressed-Sign.zip-signed-${DATE}" ]; then
+	gdialog --title "Error" --msgbox "Lithid-Compressed-Sign.zip was not able to sign for some reason" 200 200
+else
+	gdialog --title "Success" --msgbox "Lithid-Compressed-Sign.zip-signed-${DATE} created" 200 200
+fi
+exit 0

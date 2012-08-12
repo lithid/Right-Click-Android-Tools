@@ -21,9 +21,23 @@ fi
 
 function_install_sign() {
 function_chk_script_dir
-cp Sign-Apk-Zip ${SCRIPT_DIR}/
+cp Lithid-Sign-Apk-Zip ${SCRIPT_DIR}/
 cp sign.jar ${SCRIPT_DIR}/
-killall nautilus
+echo "Sign-Apk-Zip is installed!
+"
+}
+
+function_install_compress_sign() {
+function_chk_script_dir
+cp Lithid-Compress-Sign ${SCRIPT_DIR}/
+echo "Compress-Sign is installed!
+"
+}
+
+function_install_all() {
+function_chk_script_dir
+function_install_sign
+function_install_compress_sign
 }
 
 function_help() {
@@ -32,11 +46,15 @@ Right click android tools installer
 =====
 Here are some things to do:
 --install-sign <> Install sign-apk-zip script
+--install-compressed-sign <> Install compress-sign script
+--all <> Install all scripts
 "
 }
 
 case $1 in
-	--install-sign)function_install_sign;;
+	--install-sign)function_install_sign; killall nautilus;;
+	--install-compressed-sign)function_install_sign; killall nautilus;;
+	--all)function_install_all; killall nautilus;;
 	*)function_help;;
 esac
 
