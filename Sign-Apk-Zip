@@ -1,0 +1,27 @@
+#!/bin/bash
+# sign apks or zipz
+function_get_nautilus_version() {
+VER="0"
+CHK=$(nautilus --version |awk '{print $3}')
+VER=$(echo $CHK |cut -d"." -f1)
+}
+
+function_get_nautilus_version
+if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
+	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts"
+else
+	SCRIPT_DIR="$HOME/Nautilus/scripts"
+fi
+
+DIR="${SCRIPT_DIR}/"
+
+for arg in $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS; do
+	java -classpath ${DIR}/sign.jar testsign ${arg} ${arg}-signed
+	if [ ! -f "${arg}-signed" ]; then
+		gdialog --title "Error" --msgbox "${arg} was not able to sign for some reason" 200 200
+	else
+		gdialog --title "Success" --msgbox "${arg}-signed created" 200 200
+	fi
+done
+
+exit 0
