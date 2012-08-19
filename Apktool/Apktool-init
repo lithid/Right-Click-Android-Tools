@@ -1,0 +1,37 @@
+#!/bin/bash
+# Compress then sign apks/zips
+
+function_get_nautilus_version() {
+VER="0"
+CHK=$(nautilus --version |awk '{print $3}')
+VER=$(echo $CHK |cut -d"." -f1)
+}
+
+function_get_nautilus_version
+if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
+	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid/Apktool"
+else
+	SCRIPT_DIR="$HOME/Nautilus/scripts/Lithid/Apktool"
+fi
+
+DIR="${SCRIPT_DIR}/"
+
+for arg in $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS; do
+	if [ -d "${HOME}/apktool" ]; then
+		gdialog --title "Error" --msgbox "Already have frameworks assigned here:\n\n ${HOME}/apktool:\n\n clear folder and run again." 200 200
+		break
+	else
+		if [ -f $arg ]; then
+			apktool if $arg
+			if [ -d "${HOME}/apktool" ]; then
+				gdialog --title "Success" --msgbox "${arg} initialized!" 200 200
+			else
+				gdialog --title "Error" --msgbox "${arg} didn't' initialize!" 200 200
+			fi
+		else
+			gdialog --title "Error" --msgbox "Needs to be a file not directory." 200 200
+		fi
+	fi
+done
+
+

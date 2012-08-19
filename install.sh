@@ -1,6 +1,8 @@
 #!/bin/bash
 # Installer script for right click tools.
 
+HERE=$(pwd)
+
 function_get_nautilus_version() {
 VER="0"
 CHK=$(nautilus --version |awk '{print $3}')
@@ -10,9 +12,9 @@ VER=$(echo $CHK |cut -d"." -f1)
 function_chk_script_dir() {
 function_get_nautilus_version
 if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
-	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts"
+	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid"
 else
-	SCRIPT_DIR="$HOME/Nautilus/scripts"
+	SCRIPT_DIR="$HOME/Nautilus/scripts/Lithid"
 fi
 if [ ! -d ${SCRIPT_DIR} ]; then
 	mkdir -p ${SCRIPT_DIR}
@@ -21,23 +23,39 @@ fi
 
 function_install_sign() {
 function_chk_script_dir
-cp Lithid-Sign-Apk-Zip ${SCRIPT_DIR}/
+cp Sign-Apk-Zip ${SCRIPT_DIR}/
 cp sign.jar ${SCRIPT_DIR}/
-echo "Sign-Apk-Zip is installed!
-"
+echo ">>> Sign-Apk-Zip is installed! <<<"
 }
 
 function_install_compress_sign() {
 function_chk_script_dir
-cp Lithid-Compress-Sign ${SCRIPT_DIR}/
-echo "Compress-Sign is installed!
-"
+cp Compress-Sign ${SCRIPT_DIR}/
+echo ">>> Compress-Sign is installed! <<<"
+}
+
+function_install_apktool() {
+function_chk_script_dir
+cp -r Apktool/ ${SCRIPT_DIR}/
+cd ${SCRIPT_DIR}/Apktool/
+apktool_url="http://android-apktool.googlecode.com/files"
+apktool_files="apktool1.4.3.tar.bz2"
+for i in ${apktool_files}; do
+	wget ${apktool_url}/$i
+	tar xvjf $i
+	rm $i
+done
+echo "Password needed to install apktool to /usr/local/bin"
+sudo mv aapt apktool apktool.jar /usr/local/bin/
+cd ${HERE}
+echo ">>> Apktool is installed! <<<"
 }
 
 function_install_all() {
 function_chk_script_dir
 function_install_sign
 function_install_compress_sign
+function_install_apktool
 }
 
 function_help() {
@@ -47,13 +65,15 @@ Right click android tools installer
 Here are some things to do:
 --install-sign <> Install sign-apk-zip script
 --install-compressed-sign <> Install compress-sign script
+--install-apktool <> Install apktool scripts
 --all <> Install all scripts
 "
 }
 
 case $1 in
 	--install-sign)function_install_sign; killall nautilus;;
-	--install-compressed-sign)function_install_sign; killall nautilus;;
+	--install-compressed-sign)function_install_compress_sign; killall nautilus;;
+	--install-apktool)function_install_apktool; killall nautilus;;
 	--all)function_install_all; killall nautilus;;
 	*)function_help;;
 esac

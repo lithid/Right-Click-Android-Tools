@@ -1,0 +1,40 @@
+#!/bin/bash
+# Compress then sign apks/zips
+
+function_get_nautilus_version() {
+VER="0"
+CHK=$(nautilus --version |awk '{print $3}')
+VER=$(echo $CHK |cut -d"." -f1)
+}
+
+function_get_nautilus_version
+if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
+	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid/Apktool"
+else
+	SCRIPT_DIR="$HOME/Nautilus/scripts/Lithid/Apktool"
+fi
+
+DIR="${SCRIPT_DIR}/"
+
+for arg in $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS; do
+	if [ -d "${HOME}/apktool" ]; then
+		if [ -f "$arg" ]; then
+			apktool d $arg
+			gdialog --title "Success" --msgbox "${arg} has been decompiled!" 200 200
+		else
+			if [ -f "/tmp/building-apktool" ]; then
+				rm -rf "/tmp/building-apktool"
+			fi
+			apktool b $arg &>> /tmp/building-apktool
+			if [ $? -ne 0 ]; then
+				gdialog --title "Error" --msgbox "${arg} did not compile successfully" 200 200
+				xdg-open "/tmp/building-apktool"
+			else
+				gdialog --title "Success" --msgbox "${arg}/build/\n\n has been compiled!" 200 200
+			fi
+		fi
+	else
+		gdialog --title "Error" --msgbox "Need to run apktool init and assign framework-res!" 200 200
+		break
+	fi
+done
