@@ -66,6 +66,7 @@ Here are some things to do:
 --install-sign <> Install sign-apk-zip script
 --install-compressed-sign <> Install compress-sign script
 --install-apktool <> Install apktool scripts
+--install-runroot <> Install run as root
 --all <> Install all scripts
 "
 }
