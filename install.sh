@@ -38,13 +38,6 @@ function_install_apktool() {
 function_chk_script_dir
 cp -r Apktool/ ${SCRIPT_DIR}/
 cd ${SCRIPT_DIR}/Apktool/
-apktool_url="http://android-apktool.googlecode.com/files"
-apktool_files="apktool1.4.3.tar.bz2"
-for i in ${apktool_files}; do
-	wget ${apktool_url}/$i
-	tar xvjf $i
-	rm $i
-done
 echo "Password needed to install apktool to /usr/local/bin"
 sudo mv aapt apktool apktool.jar /usr/local/bin/
 cd ${HERE}
