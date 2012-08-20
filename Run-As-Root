@@ -1,0 +1,11 @@
+#!/bin/bash
+# Open file or folder as root
+ARG=$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS
+
+chk=$(echo ${ARG} |wc -w)
+if [ ${chk} -ne 1 ]; then
+	gdialog --title "Error" --msgbox "Only do one thing at a time, got ${chk}" 200 200
+	exit 0
+else
+	gksudo -m "Need your root password to open ${ARG}" xdg-open ${ARG}
+fi

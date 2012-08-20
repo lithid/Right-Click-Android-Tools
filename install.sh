@@ -51,11 +51,18 @@ cd ${HERE}
 echo ">>> Apktool is installed! <<<"
 }
 
+function_install_run_root() {
+function_chk_script_dir
+cp Run-As-Root ${SCRIPT_DIR}/
+echo ">>> Run-As-Root is installed! <<<"
+}
+
 function_install_all() {
 function_chk_script_dir
 function_install_sign
 function_install_compress_sign
 function_install_apktool
+function_install_run_root
 }
 
 function_help() {
@@ -74,6 +81,7 @@ case $1 in
 	--install-sign)function_install_sign; killall nautilus;;
 	--install-compressed-sign)function_install_compress_sign; killall nautilus;;
 	--install-apktool)function_install_apktool; killall nautilus;;
+	--install-runroot)function_install_run_root; killall nautilus;;
 	--all)function_install_all; killall nautilus;;
 	*)function_help;;
 esac
