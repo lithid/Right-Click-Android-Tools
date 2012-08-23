@@ -1,0 +1,100 @@
+#!/usr/bin/env python
+
+import gtk
+import os
+import re
+import subprocess
+
+res = []
+num = []
+FileCHK = gtk.CheckButton()
+FileCHKLab = gtk.Label()
+FileCHKLab.set_markup("Seaching in Files")
+
+LithidTmp = "/tmp/grepfile-Lithid"
+
+HERE = os.getcwd()
+
+def grep(path, regex, which):
+	regObj = re.compile(regex)
+	for root, dirs, fnames in os.walk(path):
+		for fname in fnames:
+			if which == "File":
+				if regObj.match(fname):
+					res.append(os.path.join(root, fname))
+			else:
+				count = 0
+				for line in open(os.path.join(root, fname), 'r'):
+					count += 1
+					if regex in line:
+						res.append(os.path.join(root, fname))
+						num.append(count)
+
+	return res
+
+def toggle_file_chk(obj):
+	if FileCHK.get_active() == True:
+		FileCHKLab.set_markup("Seaching Filenames")
+	else:
+		FileCHKLab.set_markup("Seaching in Files")
+
+def searchDial():
+	title = "Search for string"
+	message = "Please search your string here, toggle the checkbox if you are looking for a filename instead of searching in files."
+	dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, type=gtk.MESSAGE_INFO, buttons=gtk.BUTTONS_OK)
+	dialog.set_markup(title)
+	dialog.format_secondary_markup(message)
+	table = gtk.Table(2, 2, False)
+	dialog.vbox.pack_start(table)
+	label = gtk.Label()
+	label.set_markup("String:")
+	label.show()
+	entry = gtk.Entry()
+	entry.show()
+	FileCHK.set_active(False)
+	FileCHK.connect("toggled", toggle_file_chk)
+	FileCHK.show()
+	FileCHKLab.show()
+	table.attach(label, 0, 1, 0, 1, xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
+	table.attach(entry, 0, 1, 1, 2, xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
+	table.attach(FileCHKLab, 1, 2, 0, 1, xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
+	table.attach(FileCHK, 1, 2, 1, 2, xoptions=gtk.EXPAND, yoptions=gtk.EXPAND)
+	table.show()
+	q = dialog.run()
+	if q == gtk.RESPONSE_OK:
+		n = entry.get_text()
+		if n:
+			return n
+		else:
+			return False
+	else:
+		return False
+	dialog.destroy()
+
+def actionDo(arg):
+	if FileCHK.get_active() == True:
+		RUN = "File"
+	else:
+		RUN = "Else"
+
+	new = 0
+	if os.path.exists(LithidTmp):
+		os.remove(LithidTmp)
+
+	tmpfile = file(LithidTmp, 'w')
+	print HERE
+	for i in grep(HERE, arg, RUN):
+		tmpfile.write("%s: %s\n" % (num[new], res[new]))
+		new += 1
+	tmpfile.close()
+
+	if os.path.exists(LithidTmp):
+		subprocess.call(('xdg-open', LithidTmp))
+
+s = searchDial()
+if s == False:
+	exit(1)
+else:
+	actionDo(s)
+
+exit(0)

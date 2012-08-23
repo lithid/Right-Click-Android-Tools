@@ -11,8 +11,13 @@ VER=$(echo $CHK |cut -d"." -f1)
 
 function_chk_script_dir() {
 function_get_nautilus_version
+OSVER=$(python -c "import platform as p; i = p.dist(); print i[1];")
 if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
-	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid"
+	if [ ${OSVER} = "12.10" ]; then
+		SCRIPT_DIR="$HOME/.local/share/nautilus/scripts/Lithid"
+	else
+		SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid"
+	fi
 else
 	SCRIPT_DIR="$HOME/Nautilus/scripts/Lithid"
 fi
@@ -50,12 +55,19 @@ cp Run-As-Root ${SCRIPT_DIR}/
 echo ">>> Run-As-Root is installed! <<<"
 }
 
+function_install_search_string() {
+function_chk_script_dir
+cp Search-For-String ${SCRIPT_DIR}/
+echo ">>> Search-For-String is installed! <<<"
+}
+
 function_install_all() {
 function_chk_script_dir
 function_install_sign
 function_install_compress_sign
 function_install_apktool
 function_install_run_root
+function_install_search_string
 }
 
 function_help() {
@@ -67,6 +79,7 @@ Here are some things to do:
 --install-compressed-sign <> Install compress-sign script
 --install-apktool <> Install apktool scripts
 --install-runroot <> Install run as root
+--install-searchstring <> Search for strings like grep
 --all <> Install all scripts
 "
 }
@@ -76,6 +89,7 @@ case $1 in
 	--install-compressed-sign)function_install_compress_sign; killall nautilus;;
 	--install-apktool)function_install_apktool; killall nautilus;;
 	--install-runroot)function_install_run_root; killall nautilus;;
+	--install-searchstring)function_install_search_string; killall nautilus;;
 	--all)function_install_all; killall nautilus;;
 	*)function_help;;
 esac
