@@ -11,7 +11,6 @@ VER=$(echo $CHK |cut -d"." -f1)
 
 function_chk_script_dir() {
 function_get_nautilus_version
-OSVER=$(python -c "import platform as p; i = p.dist(); print i[1];")
 if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
 	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid"
 else
