@@ -13,11 +13,7 @@ function_chk_script_dir() {
 function_get_nautilus_version
 OSVER=$(python -c "import platform as p; i = p.dist(); print i[1];")
 if [ ${VER} != "1" ] && [ ${VER} != "0" ]; then
-	if [ ${OSVER} = "12.10" ]; then
-		SCRIPT_DIR="$HOME/.local/share/nautilus/scripts/Lithid"
-	else
-		SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid"
-	fi
+	SCRIPT_DIR="$HOME/.gnome2/nautilus-scripts/Lithid"
 else
 	SCRIPT_DIR="$HOME/Nautilus/scripts/Lithid"
 fi
