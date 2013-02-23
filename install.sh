@@ -56,6 +56,12 @@ cp Search-For-String ${SCRIPT_DIR}/
 echo ">>> Search-For-String is installed! <<<"
 }
 
+function_install_push2sd() {
+function_chk_script_dir
+cp Push2Sd ${SCRIPT_DIR}/
+echo ">>> Push2Sd is installed! <<<"
+}
+
 function_install_all() {
 function_chk_script_dir
 function_install_sign
@@ -63,6 +69,7 @@ function_install_compress_sign
 function_install_apktool
 function_install_run_root
 function_install_search_string
+function_install_push2sd
 }
 
 function_help() {
@@ -75,6 +82,7 @@ Here are some things to do:
 --install-apktool <> Install apktool scripts
 --install-runroot <> Install run as root
 --install-searchstring <> Search for strings like grep
+--install-push2sd <> Push files to sdcard (adb)
 --all <> Install all scripts
 "
 }
@@ -85,6 +93,7 @@ case $1 in
 	--install-apktool)function_install_apktool; killall nautilus;;
 	--install-runroot)function_install_run_root; killall nautilus;;
 	--install-searchstring)function_install_search_string; killall nautilus;;
+	--install-push2sd)function_install_push2sd; killall nautilus;;
 	--all)function_install_all; killall nautilus;;
 	*)function_help;;
 esac
